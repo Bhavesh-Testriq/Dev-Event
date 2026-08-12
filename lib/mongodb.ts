@@ -12,16 +12,12 @@ declare global {
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if(!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable inside .env.local")
-}
-
-let cached : MongooseCache = global.mongoose ?? {
+let cached: MongooseCache = global.mongoose ?? {
   connection: null,
   promise: null,
 };
 
-if(!global.mongoose) {
+if (!global.mongoose) {
   global.mongoose = cached;
 }
 
@@ -33,7 +29,11 @@ export async function connectDB(): Promise<typeof mongoose> {
 
   if (!cached.promise) {
     // Disabling command buffering makes an unavailable database fail fast.
-    const options =  { bufferCommands: false };
+    if (!MONGODB_URI) {
+      throw new Error("Please define the MONGODB_URI environment variable inside .env.local")
+    }
+    
+    const options = { bufferCommands: false };
 
     cached.promise = mongoose.connect(MONGODB_URI!, options).then((mongoose) => {
       return mongoose;
