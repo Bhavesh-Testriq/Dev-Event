@@ -99,7 +99,7 @@ const EventSchema = new Schema<IEvent>(
       required: [true, "Tags are required."],
       validate: {
         validator: (v: string) => v.length > 0,
-        message: "At least one agenda item is required",
+        message: "At least one tag item is required",
       },
     },
   },
